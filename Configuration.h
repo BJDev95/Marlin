@@ -109,6 +109,9 @@
 // Diameter of print bed - this is used to set the distance that autocalibration probes the bed at.
 #define BED_DIAMETER 170 // mm
 
+// if EFFECTOR_FSR is defined then the Z_PROBE_* are ignored
+#define EFFECTOR_FSR
+
 // Z-Probe variables
 // Start and end location values are used to deploy/retract the probe (will move from start to end and back again) 
 #define Z_PROBE_OFFSET {0, 0, 0, 0}  // X, Y, Z, E distance between hotend nozzle and deployed bed leveling probe.
