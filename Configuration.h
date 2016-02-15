@@ -143,6 +143,9 @@
 #define TOWER_B_DIAGROD_ADJ 0 //Front Right Tower
 #define TOWER_C_DIAGROD_ADJ 0 //Rear Tower
 
+// if EFFECTOR_FSR is defined then the Z_PROBE_* are ignored
+#define EFFECTOR_FSR
+
 // Z-Probe variables
 // Start and end location values are used to deploy/retract the probe (will move from start to end and back again) 
 #define Z_PROBE_OFFSET {0, 0, 0, 0}  // X, Y, Z, E distance between hotend nozzle and deployed bed leveling probe.

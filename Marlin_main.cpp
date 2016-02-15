@@ -907,6 +907,7 @@ void set_delta_constants()
 }
 
 void deploy_z_probe() {
+<<<<<<< HEAD
   if ((z_probe_deploy_start_location[X_AXIS] != 0)
   and (z_probe_deploy_start_location[Y_AXIS] != 0)
   and (z_probe_deploy_start_location[Z_AXIS] != 0))
@@ -931,6 +932,16 @@ void deploy_z_probe() {
     st_synchronize();
     }
 }
+=======
+#ifdef EFFECTOR_FSR
+    return;
+#endif
+  feedrate = homing_feedrate[X_AXIS];
+  destination[X_AXIS] = z_probe_deploy_start_location[X_AXIS];
+  destination[Y_AXIS] = z_probe_deploy_start_location[Y_AXIS];
+  destination[Z_AXIS] = z_probe_deploy_start_location[Z_AXIS];
+  prepare_move_raw();
+>>>>>>> 6f953cc... Added Effector FSR Auto calibration
 
 void apply_endstop_adjustment(float x_endstop, float y_endstop, float z_endstop)
 {
@@ -1047,6 +1058,7 @@ void adj_endstops() {
     bed_safe_z = 20;
 }
 
+<<<<<<< HEAD
 int fix_tower_errors()
 {
     boolean t1_err, t2_err, t3_err;
@@ -1059,6 +1071,15 @@ int fix_tower_errors()
     float low_opp, high_opp;
     
     for (int i=0; i<6; i++) saved_tower_adj[i] = tower_adj[i];
+=======
+void retract_z_probe() {
+#ifdef EFFECTOR_FSR
+    return;
+#endif
+  feedrate = homing_feedrate[X_AXIS];
+  destination[Z_AXIS] = 50;
+  prepare_move_raw();
+>>>>>>> 6f953cc... Added Effector FSR Auto calibration
 
     err_tower = 0;
     
