@@ -86,17 +86,10 @@
 #define DEFAULT_DELTA_DIAGONAL_ROD 230.95 // mm
 
 // Horizontal offset from middle of printer to smooth rod center.
-<<<<<<< HEAD
-#define DELTA_SMOOTH_ROD_OFFSET 152 //156.4 // mm //158
-
-// Horizontal offset of the universal joints on the end effector.
-#define DELTA_EFFECTOR_OFFSET 21 // mm 
-=======
 #define DELTA_SMOOTH_ROD_OFFSET 145 // mm
 
 // Horizontal offset of the universal joints on the end effector.
 #define DELTA_EFFECTOR_OFFSET 19.9 // mm
->>>>>>> df4a5b4... Adjusted values for Mini Kossel with Effector FSR
 
 // Horizontal offset of the universal joints on the carriages.
 #define DELTA_CARRIAGE_OFFSET 19.5 // mm
