@@ -21,6 +21,8 @@
 #define LANGUAGE_CHOICE 1  // Pick your language from the list above
 #endif
 
+#define MSG_ZPROBE_ZOFFSET "Z Offset"
+
 #define PROTOCOL_VERSION "1.0"
 
 #if MOTHERBOARD == 7 || MOTHERBOARD == 71

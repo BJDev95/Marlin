@@ -183,7 +183,7 @@ float add_homeing[3]={0,0,0};
   float delta_diagonal_rod; // = DEFAULT_DELTA_DIAGONAL_ROD;
   float DELTA_DIAGONAL_ROD_2;
   float ac_prec = AUTOCALIBRATION_PRECISION / 2;
-  float bed_radius = BED_DIAMETER / 2;
+  float bed_radius = BED_DIAMETER / 2 - 5; // -5 to make sure not that probe doesn't "fall off" the print bed
   float delta_tower1_x, delta_tower1_y;
   float delta_tower2_x, delta_tower2_y;
   float delta_tower3_x, delta_tower3_y;
