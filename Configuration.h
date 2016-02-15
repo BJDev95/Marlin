@@ -96,7 +96,7 @@
 
 // Effective horizontal distance bridged by diagonal push rods.
 //#define DEFAULT_DELTA_RADIUS (DELTA_SMOOTH_ROD_OFFSET-DELTA_EFFECTOR_OFFSET-DELTA_CARRIAGE_OFFSET)
-#define DELTA_RADIUS 99
+#define DEFAULT_DELTA_RADIUS 99
 
 #define DELTA_PRINTABLE_RADIUS 80.0
 
