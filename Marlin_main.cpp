@@ -907,6 +907,12 @@ void set_delta_constants()
 
 void deploy_z_probe() {
 #ifdef EFFECTOR_FSR
+    feedrate = homing_feedrate[X_AXIS];
+    feedrate = homing_feedrate[X_AXIS];
+    destination[X_AXIS] = 0;
+    destination[Y_AXIS] = 0;
+    destination[Z_AXIS] = 50;
+    prepare_move_raw();
     return;
 #endif
   feedrate = homing_feedrate[X_AXIS];
@@ -931,6 +937,12 @@ void deploy_z_probe() {
 
 void retract_z_probe() {
 #ifdef EFFECTOR_FSR
+    feedrate = homing_feedrate[X_AXIS];
+    feedrate = homing_feedrate[X_AXIS];
+    destination[X_AXIS] = 0;
+    destination[Y_AXIS] = 0;
+    destination[Z_AXIS] = 50;
+    prepare_move_raw();
     return;
 #endif
   feedrate = homing_feedrate[X_AXIS];

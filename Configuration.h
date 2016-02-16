@@ -2,36 +2,7 @@
 #define CONFIGURATION_H
 
 /* These are good settings for a Mini Kossel:
- Adjusting Delta Geometry..
-	Z-Tower			Endstop Offsets
-	-0.0100			X:-0.68 Y:-2.36 Z:-2.63
- -0.0600		0.0300		Tower Position Adjust
-	0.0200			A:-1.03 B:0.52 C:0.51
- 0.0400		0.0300		I:0.00 J:0.50 K:0.00
-	0.0600			Delta Radius: 100.8906
- X-Tower		Y-Tower		Diag Rod: 237.9500
- 
- M501
- echo:Stored settings retrieved
- echo:Steps per unit:
- echo:  M92 X100.00 Y100.00 Z100.00 E450.00
- echo:Maximum feedrates (mm/s):
- echo:  M203 X200.00 Y200.00 Z200.00 E200.00
- echo:Maximum Acceleration (mm/s2):
- echo:  M201 X9000 Y9000 Z9000 E10000
- echo:Acceleration: S=acceleration, T=retract acceleration
- echo:  M204 S3000.00 T3000.00
- echo:Advanced variables: S=Min feedrate (mm/s), T=Min travel feedrate (mm/s), B=minimum segment time (ms), X=maximum XY jerk (mm/s),  Z=maximum Z jerk (mm/s),  E=maximum E jerk (mm/s)
- echo:  M205 S0.00 T0.00 B20000 X20.00 Z20.00 E20.00
- echo:Home offset (mm):
- echo:  M206 X0.00 Y0.00 Z0.00
- echo:Endstop adjustment (mm):
- echo:  M666 X-0.68 Y-2.36 Z-2.63
- echo:Delta Geometry adjustment:
- echo:  M666 A-1.03 B0.52 C0.51 E0.00 F0.50 G0.00 R100.89 D237.95 H193.50 P0.00
- echo:PID settings:
- echo:   M301 P15.34 I1.57 D37.45
-*/
+ */
 
 // This configuration file contains the basic settings.
 // Advanced settings can be found in Configuration_adv.h
@@ -115,7 +86,7 @@
 #define DELTA_SEGMENTS_PER_SECOND 200
 
 // Center-to-center distance of the holes in the diagonal push rods.
-#define DEFAULT_DELTA_DIAGONAL_ROD 230.95 // mm
+#define DEFAULT_DELTA_DIAGONAL_ROD 230.6 // 230.95 // mm
 
 // Horizontal offset from middle of printer to smooth rod center.
 #define DELTA_SMOOTH_ROD_OFFSET 145 // mm
@@ -128,7 +99,7 @@
 
 // Effective horizontal distance bridged by diagonal push rods.
 //#define DEFAULT_DELTA_RADIUS (DELTA_SMOOTH_ROD_OFFSET-DELTA_EFFECTOR_OFFSET-DELTA_CARRIAGE_OFFSET)
-#define DEFAULT_DELTA_RADIUS 100.8906 // 99
+#define DEFAULT_DELTA_RADIUS 98.38
 
 #define DELTA_PRINTABLE_RADIUS 80.0
 
@@ -136,7 +107,7 @@
 //#define DEBUG_MESSAGES
 
 // Precision for G30 delta autocalibration function
-#define AUTOCALIBRATION_PRECISION 0.05 // 0.03 // mm
+#define AUTOCALIBRATION_PRECISION 0.03 // 0.04 mm
 
 // Diameter of print bed - this is used to set the distance that autocalibration probes the bed at.
 #define BED_DIAMETER 2*DELTA_PRINTABLE_RADIUS // mm
@@ -149,8 +120,8 @@
 
 // Z-Probe variables
 // Start and end location values are used to deploy/retract the probe (will move from start to end and back again)
-#define Z_PROBE_OFFSET_FROM_EXTRUDER 0.65
-#define Z_PROBE_OFFSET {0, 0, -Z_PROBE_OFFSET_FROM_EXTRUDER, 0}  // X, Y, Z, E distance between hotend nozzle and deployed bed leveling probe.
+#define Z_PROBE_OFFSET_FROM_EXTRUDER 0.35
+#define Z_PROBE_OFFSET {0, 0, Z_PROBE_OFFSET_FROM_EXTRUDER, 0}  // X, Y, Z, E distance between hotend nozzle and deployed bed leveling probe.
 #define Z_PROBE_DEPLOY_START_LOCATION {0, 0, 50, 0}   // X, Y, Z, E start location for z-probe deployment sequence
 #define Z_PROBE_DEPLOY_END_LOCATION {0, 0, 50, 0} 	  // X, Y, Z, E end location for z-probe deployment sequence
 #define Z_PROBE_RETRACT_START_LOCATION {0, 0, 20, 0}  // X, Y, Z, E start location for z-probe retract sequence
@@ -204,10 +175,10 @@
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
 // to check that the wiring to the thermistor is not broken.
 // Otherwise this would lead to the heater being powered on all the time.
-#define HEATER_0_MINTEMP 5
-#define HEATER_1_MINTEMP 5
-#define HEATER_2_MINTEMP 5
-#define BED_MINTEMP 5
+#define HEATER_0_MINTEMP 3
+#define HEATER_1_MINTEMP 3
+#define HEATER_2_MINTEMP 3
+#define BED_MINTEMP 3
 
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
@@ -391,7 +362,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 // For deltabots this means top and center of the cartesian print volume.
 #define MANUAL_X_HOME_POS 0
 #define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS 193.5  // For delta: Distance between nozzle and print surface after homing.
+#define MANUAL_Z_HOME_POS 207.82 // For delta: Distance between nozzle and print surface after homing.
 
 //// MOVEMENT SETTINGS
 #define NUM_AXIS 4 // The axis order in all axis related arrays is X, Y, Z, E
@@ -399,7 +370,13 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 
 // default settings
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100, 100, 100, 450} // Maybe 430 would be correct but underextrusion then
+#define XYZ_FULL_STEPS_PER_ROTATION 200
+#define XYZ_MICROSTEPS 16
+#define XYZ_BELT_PITCH 2
+#define XYZ_PULLEY_TEETH 16
+#define XYZ_STEPS (XYZ_FULL_STEPS_PER_ROTATION * XYZ_MICROSTEPS / double(XYZ_BELT_PITCH) / double(XYZ_PULLEY_TEETH))
+
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {XYZ_STEPS, XYZ_STEPS, XYZ_STEPS, 450} // Maybe 430 would be correct but underextrusion then
 #define DEFAULT_MAX_FEEDRATE          {200, 200, 200, 200}    // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION      {9000,9000,9000,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
