@@ -1,8 +1,85 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-/* These are good settings for a Mini Kossel:
- */
+//https://groups.google.com/forum/#!topic/deltabot/SrmxHMxdgBE
+
+/* Instructions:
+ The auto-calibration can now automatically adjust the following printer configuration variables:
+ 
+ ·         Delta Radius
+ 
+ ·         Diagonal Rod Length
+ 
+ ·         Software Endstop Offsets
+ 
+ ·         Z-Height Correction
+ 
+ ·         Tower Position Error Correction (independent Radius and Radial position adjustment for each tower)
+ 
+ All of these values can also be changed manually if desired using the M666 command .
+ 
+ 
+ 
+ The following G-Code commands are have been added to the standard marlin firmware:
+ 
+ G30        This command is used to perform reporting and auto-calibration of a delta printer and has several options, as follows:
+ 
+ G30        Probe bed and produce a report of the current state of the printer, e.g.:
+ 
+ Z-Tower                                 Endstop Offsets
+ -0.0125                                 X:-3.05 Y:-1.83 Z:-2.69
+ -0.0000                 -0.0000                     Tower Position Adjust
+ -0.0625                                 A:-0.04 B:0.05 C:-0.01
+ -0.0375                 -0.0250                     I:0.25 J:-1.25 K:-0.37
+ -0.0250                                 Delta Radius: 109.5965
+ X-Tower                  Y-Tower                    Diag Rod: 224.5935
+ 
+ This option does not change any settings, but is useful when manually calibrating a printer, using the M666 command to change values.
+ 
+ G30 Xnn Ynn      Probe bed at specified X,Y point and show z-height and delta carriage positions, e.g.:
+ 
+ Bed Z-Height at X:30.00 Y:30.00 = 0.0000
+ Carriage Positions: [176.40, 207.77, 209.52]
+ 
+ G30 A    Start auto-calibration. This will attempt to calibrate the printer,  adjusting all
+ parameters automatically, and will repeat the bed probing sequence show above
+ several times adjusting each time until calibration is complete.
+ It is recommended that you use M502 to load default values and then M500 to save
+ them prior to starting the auto-calibration.
+ 
+ To save the settings after the auto-calibration is complete, use the M500 command.
+ 
+ M666 L      List all current configuration values , e.g.:
+ 
+ Current Delta geometry values:
+ X (Endstop Adj): -3.05
+ Y (Endstop Adj): -1.83
+ Z (Endstop Adj): -2.69
+ P (Z-Probe Offset): X0.00 Y10.00 Z-5.60
+ A (Tower A Position Correction): -0.04
+ B (Tower B Position Correction): 0.05
+ C (Tower C Position Correction): -0.02
+ I (Tower A Radius Correction): 0.25
+ J (Tower B Radius Correction): -1.25
+ K (Tower C Radius Correction): -0.37
+ R (Delta Radius): 109.60
+ D (Diagonal Rod Length): 224.59
+ H (Z-Height): 255.73
+ 
+ All of these values can also be adjusted using the M666 command, e.g. to set the delta radius to 200mm, use:
+ 
+ M666 R200
+ 
+ Or to change the Z-Height to 350.5 mm:
+ 
+ M666 H350.5
+ 
+ Commands can also be combined, e.g. to set endstop values:
+ 
+ M666 X-2.04 Y-1.02 Z-1.52
+ 
+ All of these values can be saved/loaded to/from EEPROM using standard M500/M501 G-Code commands (to save the settings at any time just type M500). This makes manual configuration of a printer much easier as there is no longer a requirement to edit the configuration.h file and re-upload firmware for each time a change needs to be made.
+*/
 
 // This configuration file contains the basic settings.
 // Advanced settings can be found in Configuration_adv.h
@@ -86,7 +163,7 @@
 #define DELTA_SEGMENTS_PER_SECOND 200
 
 // Center-to-center distance of the holes in the diagonal push rods.
-#define DEFAULT_DELTA_DIAGONAL_ROD 230.6 // 230.95 // mm
+#define DEFAULT_DELTA_DIAGONAL_ROD 225.53 //227 // 230.6 // 230.95 // mm
 
 // Horizontal offset from middle of printer to smooth rod center.
 #define DELTA_SMOOTH_ROD_OFFSET 145 // mm
@@ -107,7 +184,7 @@
 //#define DEBUG_MESSAGES
 
 // Precision for G30 delta autocalibration function
-#define AUTOCALIBRATION_PRECISION 0.03 // 0.04 mm
+#define AUTOCALIBRATION_PRECISION 0.04 // 0.03 mm
 
 // Diameter of print bed - this is used to set the distance that autocalibration probes the bed at.
 #define BED_DIAMETER 2*DELTA_PRINTABLE_RADIUS // mm
@@ -150,6 +227,8 @@
 // 8 is 100k 0603 SMD Vishay NTCS0603E3104FXT (4.7k pullup)
 // 9 is 100k GE Sensing AL03006-58.2K-97-G1 (4.7k pullup)
 // 10 is 100k RS thermistor 198-961 (4.7k pullup)
+// 11 is 100k beta 3950 1% thermistor (4.7k pullup)
+// 13 is 100k Hisens 3950  1% up to 300°C for hotend "Simple ONE " & "Hotend "All In ONE"
 // 60 is 100k Maker's Tool Works Kapton Bed Thermister
 //
 //    1k ohm pullup tables - This is not normal, you would have to have changed out your 4.7k for 1k
@@ -158,10 +237,10 @@
 // 52 is 200k thermistor - ATC Semitec 204GT-2 (1k pullup)
 // 55 is 100k thermistor - ATC Semitec 104GT-2 (Used in ParCan) (1k pullup)
 
-#define TEMP_SENSOR_0 5
+#define TEMP_SENSOR_0 11
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_BED 5
+#define TEMP_SENSOR_BED 11
 
 // This makes temp sensor 1 a redundant sensor for sensor 0. If the temperatures difference between these sensors is to high the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
@@ -175,10 +254,10 @@
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
 // to check that the wiring to the thermistor is not broken.
 // Otherwise this would lead to the heater being powered on all the time.
-#define HEATER_0_MINTEMP 3
-#define HEATER_1_MINTEMP 3
-#define HEATER_2_MINTEMP 3
-#define BED_MINTEMP 3
+#define HEATER_0_MINTEMP -5
+#define HEATER_1_MINTEMP -5
+#define HEATER_2_MINTEMP -5
+#define BED_MINTEMP -5
 
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
@@ -362,7 +441,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 // For deltabots this means top and center of the cartesian print volume.
 #define MANUAL_X_HOME_POS 0
 #define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS 207.82 // For delta: Distance between nozzle and print surface after homing.
+#define MANUAL_Z_HOME_POS 203.82 // For delta: Distance between nozzle and print surface after homing.
 
 //// MOVEMENT SETTINGS
 #define NUM_AXIS 4 // The axis order in all axis related arrays is X, Y, Z, E
@@ -374,7 +453,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define XYZ_MICROSTEPS 16
 #define XYZ_BELT_PITCH 2
 #define XYZ_PULLEY_TEETH 16
-#define XYZ_STEPS (XYZ_FULL_STEPS_PER_ROTATION * XYZ_MICROSTEPS / double(XYZ_BELT_PITCH) / double(XYZ_PULLEY_TEETH))
+//#define XYZ_STEPS (XYZ_FULL_STEPS_PER_ROTATION * XYZ_MICROSTEPS / double(XYZ_BELT_PITCH) / double(XYZ_PULLEY_TEETH))
+#define XYZ_STEPS 98.425196
 
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {XYZ_STEPS, XYZ_STEPS, XYZ_STEPS, 450} // Maybe 430 would be correct but underextrusion then
 #define DEFAULT_MAX_FEEDRATE          {200, 200, 200, 200}    // (mm/sec)
@@ -410,13 +490,13 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define EEPROM_CHITCHAT
 
 // Preheat Constants
-#define PLA_PREHEAT_HOTEND_TEMP 220
-#define PLA_PREHEAT_HPB_TEMP 40
+#define PLA_PREHEAT_HOTEND_TEMP 200
+#define PLA_PREHEAT_HPB_TEMP 50
 #define PLA_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
 
 #define ABS_PREHEAT_HOTEND_TEMP 230
 #define ABS_PREHEAT_HPB_TEMP 100
-#define ABS_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
+#define ABS_PREHEAT_FAN_SPEED 0   // Insert Value between 0 and 255
 
 //LCD and SD support
 //#define ULTRA_LCD  //general lcd support, also 16x2

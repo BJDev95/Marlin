@@ -64,6 +64,9 @@
 // G11 - retract recover filament according to settings of M208
 // G28 - Home all Axis
 // G29 - Calibrate print surface with automatic Z probe
+//       For heated probe (useful for FSR):
+//       Sxxx Wait for bed current temp to reach target temp. Waits only when heating
+//       Rxxx Wait for bed current temp to reach target temp. Waits when heating and cooling
 // G30 - Bed Probe and Delta geometry Autocalibration
 // G90 - Use Absolute Coordinates
 // G91 - Use Relative Coordinates
@@ -1492,36 +1495,130 @@ void process_commands()
       endstops_hit_on_purpose();
       break;
     case 29: // G29 Calibrate print surface with automatic Z probe.
-      if (code_seen('D'))
-        {
-        SERIAL_ECHOLN("Current bed level array values:");
-        SERIAL_ECHOLN("");
-        for (int y = 0; y < 7; y++)
-          {
-          for (int x = 0; x < 7; x++)
+            if (code_seen('D'))
             {
-            SERIAL_PROTOCOL_F(bed_level[x][y], 3);
-            SERIAL_PROTOCOLPGM(" ");
+                SERIAL_ECHOLN("Current bed level array values:");
+                SERIAL_ECHOLN("");
+                for (int y = 0; y < 7; y++)
+                {
+                    for (int x = 0; x < 7; x++)
+                    {
+                        SERIAL_PROTOCOL_F(bed_level[x][y], 3);
+                        SERIAL_PROTOCOLPGM(" ");
+                    }
+                    SERIAL_ECHOLN("");
+                }
+                break;
             }
-          SERIAL_ECHOLN("");
-          }
-        break;
-        }
-      saved_feedrate = feedrate;
-      saved_feedmultiply = feedmultiply;
-      feedmultiply = 100;
-
-      deploy_z_probe();
-      calibrate_print_surface(z_probe_offset[Z_AXIS] +
-	(code_seen(axis_codes[Z_AXIS]) ? code_value() : 0.0));
-      
-      retract_z_probe();
-
-      feedrate = saved_feedrate;
-      feedmultiply = saved_feedmultiply;
-      previous_millis_cmd = millis();
-      endstops_hit_on_purpose();
-      break;
+            // Heat probe to get the best possible values
+            // Helps when using FSR
+            if (code_seen('S') || code_seen('R') || code_seen('B') || code_seen('F')) {
+                // Taken from M109. Wait for extruder heater to reach target.
+                {// M109 - Wait for extruder heater to reach target.
+                    if(setTargetedHotend(109)){
+                        break;
+                    }
+                    LCD_MESSAGEPGM(MSG_HEATING);
+#ifdef AUTOTEMP
+                    autotemp_enabled=false;
+#endif
+                    if (code_seen('S')) {
+                        setTargetHotend(code_value(), tmp_extruder);
+#ifdef DUAL_X_CARRIAGE
+                        if (dual_x_carriage_mode == DXC_DUPLICATION_MODE && tmp_extruder == 0)
+                            setTargetHotend1(code_value() == 0.0 ? 0.0 : code_value() + duplicate_extruder_temp_offset);
+#endif
+                        CooldownNoWait = true;
+                    } else if (code_seen('R')) {
+                        setTargetHotend(code_value(), tmp_extruder);
+#ifdef DUAL_X_CARRIAGE
+                        if (dual_x_carriage_mode == DXC_DUPLICATION_MODE && tmp_extruder == 0)
+                            setTargetHotend1(code_value() == 0.0 ? 0.0 : code_value() + duplicate_extruder_temp_offset);
+#endif
+                        CooldownNoWait = false;
+                    }
+#ifdef AUTOTEMP
+                    if (code_seen('S')) autotemp_min=code_value();
+                    if (code_seen('B')) autotemp_max=code_value();
+                    if (code_seen('F'))
+                    {
+                        autotemp_factor=code_value();
+                        autotemp_enabled=true;
+                    }
+#endif
+                    
+                    setWatch();
+                    codenum = millis();
+                    
+                    /* See if we are heating up or cooling down */
+                    target_direction = isHeatingHotend(tmp_extruder); // true if heating, false if cooling
+                    
+#ifdef TEMP_RESIDENCY_TIME
+                    long residencyStart;
+                    residencyStart = -1;
+                    /* continue to loop until we have reached the target temp
+                     _and_ until TEMP_RESIDENCY_TIME hasn't passed since we reached it */
+                    while((residencyStart == -1) ||
+                          (residencyStart >= 0 && (((unsigned int) (millis() - residencyStart)) < (TEMP_RESIDENCY_TIME * 1000UL))) ) {
+#else
+                        while ( target_direction ? (isHeatingHotend(tmp_extruder)) : (isCoolingHotend(tmp_extruder)&&(CooldownNoWait==false)) ) {
+#endif //TEMP_RESIDENCY_TIME
+                            if( (millis() - codenum) > 1000UL )
+                            { //Print Temp Reading and remaining time every 1 second while heating up/cooling down
+                                SERIAL_PROTOCOLPGM("T:");
+                                SERIAL_PROTOCOL_F(degHotend(tmp_extruder),1);
+                                SERIAL_PROTOCOLPGM(" E:");
+                                SERIAL_PROTOCOL((int)tmp_extruder);
+#ifdef TEMP_RESIDENCY_TIME
+                                SERIAL_PROTOCOLPGM(" W:");
+                                if(residencyStart > -1)
+                                {
+                                    codenum = ((TEMP_RESIDENCY_TIME * 1000UL) - (millis() - residencyStart)) / 1000UL;
+                                    SERIAL_PROTOCOLLN( codenum );
+                                }
+                                else
+                                {
+                                    SERIAL_PROTOCOLLN( "?" );
+                                }
+#else
+                                SERIAL_PROTOCOLLN("");
+#endif
+                                codenum = millis();
+                            }
+                            manage_heater();
+                            manage_inactivity();
+                            lcd_update();
+#ifdef TEMP_RESIDENCY_TIME
+                            /* start/restart the TEMP_RESIDENCY_TIME timer whenever we reach target temp for the first time
+                             or when current temp falls outside the hysteresis after target temp was reached */
+                            if ((residencyStart == -1 &&  target_direction && (degHotend(tmp_extruder) >= (degTargetHotend(tmp_extruder)-TEMP_WINDOW))) ||
+                                (residencyStart == -1 && !target_direction && (degHotend(tmp_extruder) <= (degTargetHotend(tmp_extruder)+TEMP_WINDOW))) ||
+                                (residencyStart > -1 && labs(degHotend(tmp_extruder) - degTargetHotend(tmp_extruder)) > TEMP_HYSTERESIS) )
+                            {
+                                residencyStart = millis();
+                            }
+#endif //TEMP_RESIDENCY_TIME
+                        }
+                        LCD_MESSAGEPGM(MSG_HEATING_COMPLETE);
+                        starttime=millis();
+                        previous_millis_cmd = millis();
+                    }
+                }
+                saved_feedrate = feedrate;
+                saved_feedmultiply = feedmultiply;
+                feedmultiply = 100;
+                
+                deploy_z_probe();
+                calibrate_print_surface(z_probe_offset[Z_AXIS] +
+                                        (code_seen(axis_codes[Z_AXIS]) ? code_value() : 0.0));
+                
+                retract_z_probe();
+                
+                feedrate = saved_feedrate;
+                feedmultiply = saved_feedmultiply;
+                previous_millis_cmd = millis();
+                endstops_hit_on_purpose();
+                break;
     case 30: //G30 Delta AutoCalibration
       int iterations;
       

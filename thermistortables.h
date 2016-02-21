@@ -564,6 +564,94 @@ const short temptable_10[][2] PROGMEM = {
 };
 #endif
 
+#if (THERMISTORHEATER_0 == 11) || (THERMISTORHEATER_1 == 11) || (THERMISTORHEATER_2 == 11) || (THERMISTORHEATER_3 == 11) || (THERMISTORBED == 11)
+// QU-BD silicone bed QWG-104F-3950 thermistor
+
+const short temptable_11[][2] PROGMEM = {
+    {1 * OVERSAMPLENR,        938},
+    {31 * OVERSAMPLENR,       314},
+    {41 * OVERSAMPLENR,       290},
+    {51 * OVERSAMPLENR,       272},
+    {61 * OVERSAMPLENR,       258},
+    {71 * OVERSAMPLENR,       247},
+    {81 * OVERSAMPLENR,       237},
+    {91 * OVERSAMPLENR,       229},
+    {101 * OVERSAMPLENR,      221},
+    {111 * OVERSAMPLENR,      215},
+    {121 * OVERSAMPLENR,      209},
+    {131 * OVERSAMPLENR,      204},
+    {141 * OVERSAMPLENR,      199},
+    {151 * OVERSAMPLENR,      195},
+    {161 * OVERSAMPLENR,      190},
+    {171 * OVERSAMPLENR,      187},
+    {181 * OVERSAMPLENR,      183},
+    {191 * OVERSAMPLENR,      179},
+    {201 * OVERSAMPLENR,      176},
+    {221 * OVERSAMPLENR,      170},
+    {241 * OVERSAMPLENR,      165},
+    {261 * OVERSAMPLENR,      160},
+    {281 * OVERSAMPLENR,      155},
+    {301 * OVERSAMPLENR,      150},
+    {331 * OVERSAMPLENR,      144},
+    {361 * OVERSAMPLENR,      139},
+    {391 * OVERSAMPLENR,      133},
+    {421 * OVERSAMPLENR,      128},
+    {451 * OVERSAMPLENR,      123},
+    {491 * OVERSAMPLENR,      117},
+    {531 * OVERSAMPLENR,      111},
+    {571 * OVERSAMPLENR,      105},
+    {611 * OVERSAMPLENR,      100},
+    {641 * OVERSAMPLENR,      95},
+    {681 * OVERSAMPLENR,      90},
+    {711 * OVERSAMPLENR,      85},
+    {751 * OVERSAMPLENR,      79},
+    {791 * OVERSAMPLENR,      72},
+    {811 * OVERSAMPLENR,      69},
+    {831 * OVERSAMPLENR,      65},
+    {871 * OVERSAMPLENR,      57},
+    {881 * OVERSAMPLENR,      55},
+    {901 * OVERSAMPLENR,      51},
+    {921 * OVERSAMPLENR,      45},
+    {941 * OVERSAMPLENR,      39},
+    {971 * OVERSAMPLENR,      28},
+    {981 * OVERSAMPLENR,      23},
+    {991 * OVERSAMPLENR,      17},
+    {1001 * OVERSAMPLENR,     9},
+    {1021 * OVERSAMPLENR,     -27}
+};
+#endif
+
+#if (THERMISTORHEATER_0 == 13) || (THERMISTORHEATER_1 == 13) || (THERMISTORHEATER_2 == 13) || (THERMISTORHEATER_3 == 13) || (THERMISTORBED == 13)
+// Hisens thermistor B25/50 =3950 +/-1%
+
+const short temptable_13[][2] PROGMEM = {
+    { 20.04 * OVERSAMPLENR, 300 },
+    { 23.19 * OVERSAMPLENR, 290 },
+    { 26.71 * OVERSAMPLENR, 280 },
+    { 31.23 * OVERSAMPLENR, 270 },
+    { 36.52 * OVERSAMPLENR, 260 },
+    { 42.75 * OVERSAMPLENR, 250 },
+    { 50.68 * OVERSAMPLENR, 240 },
+    { 60.22 * OVERSAMPLENR, 230 },
+    { 72.03 * OVERSAMPLENR, 220 },
+    { 86.84 * OVERSAMPLENR, 210 },
+    { 102.79 * OVERSAMPLENR, 200 },
+    { 124.46 * OVERSAMPLENR, 190 },
+    { 151.02 * OVERSAMPLENR, 180 },
+    { 182.86 * OVERSAMPLENR, 170 },
+    { 220.72 * OVERSAMPLENR, 160 },
+    { 316.96 * OVERSAMPLENR, 140 },
+    { 447.17 * OVERSAMPLENR, 120 },
+    { 590.61 * OVERSAMPLENR, 100 },
+    { 737.31 * OVERSAMPLENR, 80 },
+    { 857.77 * OVERSAMPLENR, 60 },
+    { 939.52 * OVERSAMPLENR, 40 },
+    { 986.03 * OVERSAMPLENR, 20 },
+    { 1008.7 * OVERSAMPLENR, 0}
+    
+};
+#endif
+
 #if (THERMISTORHEATER_0 == 51) || (THERMISTORHEATER_1 == 51) || (THERMISTORHEATER_2 == 51) || (THERMISTORBED == 51)
 // 100k EPCOS (WITH 1kohm RESISTOR FOR PULLUP, R9 ON SANGUINOLOLU! NOT FOR 4.7kohm PULLUP! THIS IS NOT NORMAL!)
 // Verified by linagee.
